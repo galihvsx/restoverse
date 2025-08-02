@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class LoadingWidget extends StatelessWidget {
   final String? message;
   final double? size;
-  
-  const LoadingWidget({
-    super.key,
-    this.message,
-    this.size = 100,
-  });
-  
+
+  const LoadingWidget({super.key, this.message, this.size = 100});
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -19,7 +16,13 @@ class LoadingWidget extends StatelessWidget {
           SizedBox(
             width: size,
             height: size,
-            child: const CircularProgressIndicator(),
+            child: Lottie.asset(
+              'assets/lottie/loading_anim.json',
+              width: size,
+              height: size,
+              fit: BoxFit.contain,
+              repeat: true,
+            ),
           ),
           if (message != null) ...[
             const SizedBox(height: 16),

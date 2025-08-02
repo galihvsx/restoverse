@@ -87,11 +87,7 @@ class _SplashPageState extends State<SplashPage>
                           ),
                         ],
                       ),
-                      child: Icon(
-                        Icons.restaurant,
-                        size: 60,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                      child: Image.asset('assets/images/applogo.png'),
                     ),
                     const SizedBox(height: 24),
                     Text(
@@ -112,7 +108,7 @@ class _SplashPageState extends State<SplashPage>
                       ),
                     ),
                     const SizedBox(height: 40),
-                    const LoadingWidget(size: 30),
+                    const LoadingWidget(size: 140),
                   ],
                 ),
               ),

@@ -78,7 +78,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage>
             ApiInitial() => const Center(
               child: Text('Loading restaurant details...'),
             ),
-            ApiLoading() => const Center(child: LoadingWidget()),
+            ApiLoading() => Center(child: LoadingWidget(size: 200)),
             ApiSuccess(data: final restaurant) => _buildSuccessContent(
               context,
               restaurant,
