@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/themes/app_theme.dart';
 import 'core/constants/app_constants.dart';
+import 'core/routes/app_router.dart';
+import 'core/services/navigation_service.dart';
 import 'features/theme/presentation/providers/theme_provider.dart';
-import 'features/splash/presentation/pages/splash_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,7 +27,9 @@ class MyApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: themeProvider.themeMode,
-            home: const SplashPage(),
+            navigatorKey: NavigationService.navigatorKey,
+            onGenerateRoute: AppRouter.generateRoute,
+            initialRoute: AppRouter.splash,
           );
         },
       ),
