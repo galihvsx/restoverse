@@ -13,6 +13,7 @@
 migrate_working_dir/
 .trae
 .cursor
+local.properties
 
 # IntelliJ related
 *.iml
