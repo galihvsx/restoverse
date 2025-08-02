@@ -1,6 +1,7 @@
 # Restoverse - Restaurant App
 
-A beautiful and modern restaurant discovery app built with Flutter, featuring clean architecture and smooth animations.
+A modern restaurant discovery app built with Flutter, featuring clean architecture and smooth
+animations.
 
 ## 🚀 Features
 
@@ -167,7 +168,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 👨‍💻 Development Status
 
-🚧 **Currently in development** - Check the [todo list](.trae/todo.md) for current progress and upcoming features.
+🚧 **Currently in development** - Check the [todo list](.trae/todo.md) for current progress and
+upcoming features.
 
 ---
 
