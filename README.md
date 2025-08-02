@@ -1,6 +1,7 @@
 # Restoverse - Restaurant App
 
-A beautiful and modern restaurant discovery app built with Flutter, featuring clean architecture and smooth animations.
+A modern restaurant discovery app built with Flutter, featuring clean architecture and smooth
+animations.
 
 ## 🚀 Features
 
@@ -33,7 +34,8 @@ lib/
 └── main.dart               # App entry point
 ```
 
-### Each feature follows the same structure:
+### Each feature follows the same structure
+
 - **data/**: Data sources, models, and repository implementations
 - **domain/**: Business logic, entities, and repository interfaces
 - **presentation/**: UI components, pages, and state management
@@ -53,7 +55,8 @@ lib/
 The development is organized into phases. Check the detailed plan in:
 📄 [Development Todo List](.trae/todo.md)
 
-### Phase Overview:
+### Phase Overview
+
 1. **Phase 1**: Project setup and foundation
 2. **Phase 2**: Splash screen and theme system
 3. **Phase 3**: Restaurant list feature
@@ -64,6 +67,7 @@ The development is organized into phases. Check the detailed plan in:
 ## 🔧 Getting Started
 
 ### Prerequisites
+
 - Flutter SDK (>=3.8.1)
 - Dart SDK
 - Android Studio / VS Code
@@ -72,17 +76,20 @@ The development is organized into phases. Check the detailed plan in:
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd dcresto
    ```
 
 2. **Install dependencies**
+
    ```bash
    flutter pub get
    ```
 
 3. **Run the app**
+
    ```bash
    flutter run
    ```
@@ -93,13 +100,15 @@ The app integrates with the Dicoding Restaurant API:
 
 **Base URL**: `https://restaurant-api.dicoding.dev`
 
-### Endpoints:
+### Endpoints
+
 - `GET /list` - Get restaurant list
 - `GET /detail/:id` - Get restaurant details
 - `GET /search?q=<query>` - Search restaurants
 - `POST /review` - Add restaurant review
 
-### Image URLs:
+### Image URLs
+
 - Small: `https://restaurant-api.dicoding.dev/images/small/<pictureId>`
 - Medium: `https://restaurant-api.dicoding.dev/images/medium/<pictureId>`
 - Large: `https://restaurant-api.dicoding.dev/images/large/<pictureId>`
@@ -120,11 +129,13 @@ The app integrates with the Dicoding Restaurant API:
 ## 🧪 Testing
 
 The project includes comprehensive testing:
+
 - **Unit Tests**: Business logic and use cases
 - **Widget Tests**: UI components
 - **Integration Tests**: API integration and user flows
 
 Run tests with:
+
 ```bash
 flutter test
 ```
@@ -132,6 +143,7 @@ flutter test
 ## 📦 Dependencies
 
 Key dependencies used in this project:
+
 - `provider` - State management
 - `dio` - HTTP client
 - `cached_network_image` - Image caching
@@ -156,7 +168,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 👨‍💻 Development Status
 
-🚧 **Currently in development** - Check the [todo list](.trae/todo.md) for current progress and upcoming features.
+🚧 **Currently in development** - Check the [todo list](.trae/todo.md) for current progress and
+upcoming features.
 
 ---
 

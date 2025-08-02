@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+
 import '../constants/api_constants.dart';
 import '../errors/exceptions.dart';
 
 class DioClient {
   late final Dio _dio;
-  
+
   DioClient() {
     _dio = Dio(
       BaseOptions(
@@ -15,33 +16,40 @@ class DioClient {
         headers: ApiConstants.headers,
       ),
     );
-    
+
     _dio.interceptors.add(
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        logPrint: (object) => debugPrint(object.toString()),
-      ),
+      LogInterceptor(requestBody: true, responseBody: true),
     );
   }
-  
-  Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) async {
+
+  Future<Response> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
     try {
-      return await _dio.get(path, queryParameters: queryParameters);
+      final response = await _dio.get(path, queryParameters: queryParameters);
+      return response;
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleDioException(e);
+    } catch (e) {
+      debugPrint('Unexpected error in GET request: $e');
+      throw ServerException('Unexpected error occurred');
     }
   }
-  
+
   Future<Response> post(String path, {dynamic data}) async {
     try {
-      return await _dio.post(path, data: data);
+      final response = await _dio.post(path, data: data);
+      return response;
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleDioException(e);
+    } catch (e) {
+      debugPrint('Unexpected error in POST request: $e');
+      throw ServerException('Unexpected error occurred');
     }
   }
-  
-  AppException _handleDioError(DioException error) {
+
+  AppException _handleDioException(DioException error) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.receiveTimeout:
