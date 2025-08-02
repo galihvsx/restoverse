@@ -30,26 +30,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Restoverse',
-        centerTitle: true,
-        actions: [
-          Consumer<RestaurantListProvider>(
-            builder: (context, provider, child) {
-              return IconButton(
-                icon: Icon(
-                  provider.isSearching ? Icons.search_off : Icons.search,
-                ),
-                onPressed: () {
-                  if (provider.isSearching) {
-                    provider.clearSearch();
-                  }
-                },
-              );
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: 'Restoverse', centerTitle: true),
       body: Column(
         children: [
           Consumer<RestaurantListProvider>(

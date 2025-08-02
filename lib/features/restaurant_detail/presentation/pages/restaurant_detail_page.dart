@@ -6,7 +6,6 @@ import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/error_widget.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../providers/restaurant_detail_provider.dart';
-import '../widgets/add_review_dialog.dart';
 import '../widgets/menu_section.dart';
 import '../widgets/restaurant_header.dart';
 import '../widgets/restaurant_info.dart';
@@ -104,21 +103,6 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage>
           };
         },
       ),
-      floatingActionButton: Consumer<RestaurantDetailProvider>(
-        builder: (context, provider, child) {
-          final state = provider.restaurantDetailState;
-          if (state is ApiSuccess) {
-            return FloatingActionButton.extended(
-              onPressed: () => _showAddReviewDialog(context),
-              icon: const Icon(Icons.rate_review),
-              label: const Text('Add Review'),
-              backgroundColor: theme.colorScheme.primary,
-              foregroundColor: theme.colorScheme.onPrimary,
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
     );
   }
 
@@ -163,13 +147,6 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage>
           ),
         ),
       ],
-    );
-  }
-
-  void _showAddReviewDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AddReviewDialog(restaurantId: widget.restaurantId),
     );
   }
 }

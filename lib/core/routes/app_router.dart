@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../network/dio_client.dart';
 import '../../features/restaurant_detail/data/datasources/restaurant_detail_remote_datasource.dart';
 import '../../features/restaurant_detail/data/repositories/restaurant_detail_repository_impl.dart';
-import '../../features/restaurant_detail/domain/usecases/add_review.dart';
 import '../../features/restaurant_detail/domain/usecases/get_restaurant_detail.dart';
 import '../../features/restaurant_detail/presentation/pages/restaurant_detail_page.dart';
 import '../../features/restaurant_detail/presentation/providers/restaurant_detail_provider.dart';
 import '../../features/restaurant_list/presentation/pages/restaurant_home_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../network/dio_client.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -24,14 +23,14 @@ class AppRouter {
           settings,
           transitionType: RouteTransitionType.fade,
         );
-      
+
       case home:
         return _createRoute(
           const RestaurantHomePage(),
           settings,
           transitionType: RouteTransitionType.slideFromRight,
         );
-      
+
       case restaurantDetail:
         final restaurantId = settings.arguments as String?;
         if (restaurantId == null) {
@@ -42,7 +41,7 @@ class AppRouter {
           settings,
           transitionType: RouteTransitionType.slideFromBottom,
         );
-      
+
       default:
         return _createErrorRoute('Route not found: ${settings.name}');
     }
@@ -60,7 +59,9 @@ class AppRouter {
           settings: settings,
           pageBuilder: (context, animation, secondaryAnimation) => page,
           transitionDuration: duration,
-          reverseTransitionDuration: Duration(milliseconds: duration.inMilliseconds ~/ 2),
+          reverseTransitionDuration: Duration(
+            milliseconds: duration.inMilliseconds ~/ 2,
+          ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
               opacity: CurvedAnimation(
@@ -71,13 +72,15 @@ class AppRouter {
             );
           },
         );
-      
+
       case RouteTransitionType.slideFromRight:
         return PageRouteBuilder(
           settings: settings,
           pageBuilder: (context, animation, secondaryAnimation) => page,
           transitionDuration: duration,
-          reverseTransitionDuration: Duration(milliseconds: duration.inMilliseconds ~/ 2),
+          reverseTransitionDuration: Duration(
+            milliseconds: duration.inMilliseconds ~/ 2,
+          ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
@@ -101,13 +104,15 @@ class AppRouter {
             );
           },
         );
-      
+
       case RouteTransitionType.slideFromBottom:
         return PageRouteBuilder(
           settings: settings,
           pageBuilder: (context, animation, secondaryAnimation) => page,
           transitionDuration: duration,
-          reverseTransitionDuration: Duration(milliseconds: duration.inMilliseconds ~/ 2),
+          reverseTransitionDuration: Duration(
+            milliseconds: duration.inMilliseconds ~/ 2,
+          ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(0.0, 1.0);
             const end = Offset.zero;
@@ -133,25 +138,21 @@ class AppRouter {
             );
           },
         );
-      
+
       case RouteTransitionType.scale:
         return PageRouteBuilder(
           settings: settings,
           pageBuilder: (context, animation, secondaryAnimation) => page,
           transitionDuration: duration,
-          reverseTransitionDuration: Duration(milliseconds: duration.inMilliseconds ~/ 2),
+          reverseTransitionDuration: Duration(
+            milliseconds: duration.inMilliseconds ~/ 2,
+          ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return ScaleTransition(
               scale: Tween<double>(begin: 0.8, end: 1.0).animate(
-                CurvedAnimation(
-                  parent: animation,
-                  curve: Curves.easeOutBack,
-                ),
+                CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
               ),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
+              child: FadeTransition(opacity: animation, child: child),
             );
           },
         );
@@ -161,18 +162,12 @@ class AppRouter {
   static Route<dynamic> _createErrorRoute(String message) {
     return MaterialPageRoute(
       builder: (context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Error'),
-        ),
+        appBar: AppBar(title: const Text('Error')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Colors.red,
-              ),
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
               Text(
                 message,
@@ -202,11 +197,9 @@ class AppRouter {
           remoteDataSource: remoteDataSource,
         );
         final getRestaurantDetail = GetRestaurantDetail(repository);
-        final addReview = AddReview(repository);
 
         return RestaurantDetailProvider(
           getRestaurantDetail: getRestaurantDetail,
-          addReview: addReview,
         );
       },
       child: RestaurantDetailPage(restaurantId: restaurantId),
@@ -214,9 +207,4 @@ class AppRouter {
   }
 }
 
-enum RouteTransitionType {
-  fade,
-  slideFromRight,
-  slideFromBottom,
-  scale,
-}
+enum RouteTransitionType { fade, slideFromRight, slideFromBottom, scale }
