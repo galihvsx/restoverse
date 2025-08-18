@@ -6,14 +6,16 @@ import '../../features/restaurant_detail/data/repositories/restaurant_detail_rep
 import '../../features/restaurant_detail/domain/usecases/get_restaurant_detail.dart';
 import '../../features/restaurant_detail/presentation/pages/restaurant_detail_page.dart';
 import '../../features/restaurant_detail/presentation/providers/restaurant_detail_provider.dart';
-import '../../features/restaurant_list/presentation/pages/restaurant_home_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../navigation/main_navigation.dart';
 import '../network/dio_client.dart';
 
 class AppRouter {
   static const String splash = '/';
   static const String home = '/home';
   static const String restaurantDetail = '/restaurant-detail';
+  static const String favorites = '/favorites';
+  static const String settings = '/settings';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -26,7 +28,7 @@ class AppRouter {
 
       case home:
         return _createRoute(
-          const RestaurantHomePage(),
+          const MainNavigation(),
           settings,
           transitionType: RouteTransitionType.slideFromRight,
         );
@@ -40,6 +42,21 @@ class AppRouter {
           _buildRestaurantDetailPage(restaurantId),
           settings,
           transitionType: RouteTransitionType.slideFromBottom,
+        );
+
+      case AppRouter.favorites:
+        // Favorites is now handled by MainNavigation bottom tab
+        return _createRoute(
+          const MainNavigation(),
+          settings,
+          transitionType: RouteTransitionType.slideFromRight,
+        );
+
+      case AppRouter.settings:
+        return _createRoute(
+          _buildSettingsPage(),
+          settings,
+          transitionType: RouteTransitionType.slideFromRight,
         );
 
       default:
@@ -203,6 +220,14 @@ class AppRouter {
         );
       },
       child: RestaurantDetailPage(restaurantId: restaurantId),
+    );
+  }
+
+  static Widget _buildSettingsPage() {
+    // TODO: Implement proper SettingsPage with Provider
+    return const Scaffold(
+      appBar: null,
+      body: Center(child: Text('Settings Page - Coming Soon')),
     );
   }
 }

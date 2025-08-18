@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/animations/micro_interactions.dart';
 import '../../../../core/constants/api_constants.dart';
+import '../../../favorites/presentation/providers/favorite_provider.dart';
+import '../../../favorites/domain/entities/favorite_restaurant.dart';
 import '../../domain/entities/restaurant.dart';
 
 class RestaurantCard extends StatefulWidget {
@@ -93,27 +96,82 @@ class _RestaurantCardState extends State<RestaurantCard> {
         Positioned(
           top: 12,
           right: 12,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.tertiary,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.star, size: 14, color: theme.colorScheme.onTertiary),
-                const SizedBox(width: 2),
-                Text(
-                  widget.restaurant.rating.toString(),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onTertiary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Consumer<FavoriteProvider>(builder: (context, favoriteProvider, child) {
+                return FutureBuilder<bool>(
+                  future: favoriteProvider.checkIsFavorite(widget.restaurant.id),
+                  builder: (context, snapshot) {
+                    final isFavorite = snapshot.data ?? false;
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.5),
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          color: isFavorite ? Colors.red : Colors.white,
+                          size: 20,
+                        ),
+                        onPressed: () async {
+                           final favoriteRestaurant = FavoriteRestaurant(
+                             id: widget.restaurant.id,
+                             name: widget.restaurant.name,
+                             city: widget.restaurant.city,
+                             pictureId: widget.restaurant.pictureId,
+                             rating: widget.restaurant.rating,
+                             description: widget.restaurant.description,
+                             createdAt: DateTime.now(),
+                           );
+                           
+                           final wasAdded = !(await favoriteProvider.checkIsFavorite(widget.restaurant.id));
+                           await favoriteProvider.toggleFavorite(favoriteRestaurant);
+                           
+                           if (context.mounted) {
+                             ScaffoldMessenger.of(context).showSnackBar(
+                               SnackBar(
+                                 content: Text(
+                                   wasAdded 
+                                     ? '${widget.restaurant.name} added to favorites'
+                                     : '${widget.restaurant.name} removed from favorites',
+                                 ),
+                                 duration: const Duration(seconds: 2),
+                                 behavior: SnackBarBehavior.floating,
+                               ),
+                             );
+                           }
+                         },
+                      ),
+                    );
+                  },
+                );
+              }),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.tertiary,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              ],
-            ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.star, size: 14, color: theme.colorScheme.onTertiary),
+                    const SizedBox(width: 2),
+                    Text(
+                      widget.restaurant.rating.toString(),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onTertiary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
         Positioned(
