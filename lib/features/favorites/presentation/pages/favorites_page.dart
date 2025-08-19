@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/favorite_provider.dart';
-import '../widgets/favorite_card.dart';
+
 import '../../../../core/routes/app_router.dart';
 import '../../domain/entities/favorite_restaurant.dart';
+import '../providers/favorite_provider.dart';
+import '../widgets/favorite_card.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
@@ -25,30 +26,21 @@ class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Favorite Restaurants'),
-        elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-      ),
-      body: Consumer<FavoriteProvider>(
-        builder: (context, favoriteProvider, child) {
-          return switch (favoriteProvider.state) {
-            FavoriteInitial() => const Center(
+      body: SafeArea(
+        child: Consumer<FavoriteProvider>(
+          builder: (context, favoriteProvider, child) {
+            return switch (favoriteProvider.state) {
+              FavoriteInitial() => const Center(
                 child: Text('Pull to refresh to load favorites'),
               ),
-            FavoriteLoading() => const Center(
+              FavoriteLoading() => const Center(
                 child: CircularProgressIndicator(),
               ),
-            FavoriteError(message: final message) => Center(
+              FavoriteError(message: final message) => Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: Colors.red[400],
-                    ),
+                    Icon(Icons.error_outline, size: 64, color: Colors.red[400]),
                     const SizedBox(height: 16),
                     Text(
                       'Error: $message',
@@ -66,29 +58,32 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   ],
                 ),
               ),
-            FavoriteLoaded(favorites: final favorites) => favorites.isEmpty
-                ? _buildEmptyState(context)
-                : RefreshIndicator(
-                    onRefresh: () => favoriteProvider.loadFavorites(),
-                    child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      itemCount: favorites.length,
-                      itemBuilder: (context, index) {
-                        final restaurant = favorites[index];
-                        return FavoriteCard(
-                          restaurant: restaurant,
-                          onTap: () => _navigateToDetail(context, restaurant.id),
-                          onRemove: () => _showRemoveDialog(
-                            context,
-                            restaurant,
-                            favoriteProvider,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-          };
-        },
+              FavoriteLoaded(favorites: final favorites) =>
+                favorites.isEmpty
+                    ? _buildEmptyState(context)
+                    : RefreshIndicator(
+                        onRefresh: () => favoriteProvider.loadFavorites(),
+                        child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          itemCount: favorites.length,
+                          itemBuilder: (context, index) {
+                            final restaurant = favorites[index];
+                            return FavoriteCard(
+                              restaurant: restaurant,
+                              onTap: () =>
+                                  _navigateToDetail(context, restaurant.id),
+                              onRemove: () => _showRemoveDialog(
+                                context,
+                                restaurant,
+                                favoriteProvider,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+            };
+          },
+        ),
       ),
     );
   }
@@ -104,11 +99,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.favorite_border,
-                  size: 80,
-                  color: Colors.grey[400],
-                ),
+                Icon(Icons.favorite_border, size: 80, color: Colors.grey[400]),
                 const SizedBox(height: 24),
                 Text(
                   'No Favorite Restaurants',
@@ -120,9 +111,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 const SizedBox(height: 12),
                 Text(
                   'Start adding restaurants to your favorites\nby tapping the heart icon',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.grey[500],
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: Colors.grey[500]),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
@@ -148,10 +139,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 
   void _navigateToDetail(BuildContext context, String restaurantId) {
-    Navigator.of(context).pushNamed(
-      AppRouter.restaurantDetail,
-      arguments: restaurantId,
-    );
+    Navigator.of(
+      context,
+    ).pushNamed(AppRouter.restaurantDetail, arguments: restaurantId);
   }
 
   void _showRemoveDialog(
@@ -183,9 +173,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   ),
                 );
               },
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
-              ),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
               child: const Text('Remove'),
             ),
           ],
