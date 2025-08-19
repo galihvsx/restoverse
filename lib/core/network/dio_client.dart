@@ -37,7 +37,11 @@ class DioClient {
     }
   }
 
-  Future<Response> post(String path, {dynamic data}) async {
+  Future<Response> post(
+    String path, {
+    dynamic data,
+    required Map<String, String> options,
+  }) async {
     try {
       final response = await _dio.post(path, data: data);
       return response;

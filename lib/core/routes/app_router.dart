@@ -7,6 +7,11 @@ import '../../features/restaurant_detail/domain/usecases/get_restaurant_detail.d
 import '../../features/restaurant_detail/presentation/pages/restaurant_detail_page.dart';
 import '../../features/restaurant_detail/presentation/providers/restaurant_detail_provider.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
+import '../../features/review/data/datasources/review_remote_datasource.dart';
+import '../../features/review/data/repositories/review_repository_impl.dart';
+import '../../features/review/domain/usecases/add_review.dart';
+import '../../features/review/presentation/providers/review_provider.dart';
 import '../navigation/main_navigation.dart';
 import '../network/dio_client.dart';
 
@@ -204,31 +209,40 @@ class AppRouter {
   }
 
   static Widget _buildRestaurantDetailPage(String restaurantId) {
-    return ChangeNotifierProvider(
-      create: (context) {
-        final dioClient = DioClient();
-        final remoteDataSource = RestaurantDetailRemoteDataSourceImpl(
-          dioClient: dioClient,
-        );
-        final repository = RestaurantDetailRepositoryImpl(
-          remoteDataSource: remoteDataSource,
-        );
-        final getRestaurantDetail = GetRestaurantDetail(repository);
-
-        return RestaurantDetailProvider(
-          getRestaurantDetail: getRestaurantDetail,
-        );
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) {
+            final dioClient = DioClient();
+            final remoteDataSource = RestaurantDetailRemoteDataSourceImpl(
+              dioClient: dioClient,
+            );
+            final repository = RestaurantDetailRepositoryImpl(
+              remoteDataSource: remoteDataSource,
+            );
+            final getRestaurantDetail = GetRestaurantDetail(repository);
+            
+            return RestaurantDetailProvider(
+              getRestaurantDetail: getRestaurantDetail,
+            );
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            final dioClient = DioClient();
+            final reviewRemote = ReviewRemoteDataSourceImpl(dioClient: dioClient);
+            final reviewRepo = ReviewRepositoryImpl(remoteDataSource: reviewRemote);
+            final addReview = AddReview(reviewRepo);
+            return ReviewProvider(addReview: addReview);
+          },
+        ),
+      ],
       child: RestaurantDetailPage(restaurantId: restaurantId),
     );
-  }
+   }
 
   static Widget _buildSettingsPage() {
-    // TODO: Implement proper SettingsPage with Provider
-    return const Scaffold(
-      appBar: null,
-      body: Center(child: Text('Settings Page - Coming Soon')),
-    );
+    return const SettingsPage();
   }
 }
 

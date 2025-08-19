@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../features/restaurant_list/presentation/pages/restaurant_home_page.dart';
-import '../../features/favorites/presentation/pages/favorites_page.dart';
-import '../../features/favorites/presentation/providers/favorite_provider.dart';
 import '../../features/favorites/data/datasources/favorite_local_datasource.dart';
 import '../../features/favorites/data/repositories/favorite_repository_impl.dart';
 import '../../features/favorites/domain/usecases/add_favorite.dart';
 import '../../features/favorites/domain/usecases/get_favorites.dart';
 import '../../features/favorites/domain/usecases/is_favorite.dart';
 import '../../features/favorites/domain/usecases/remove_favorite.dart';
+import '../../features/favorites/presentation/pages/favorites_page.dart';
+import '../../features/favorites/presentation/providers/favorite_provider.dart';
+import '../../features/restaurant_list/presentation/pages/restaurant_home_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
 import '../database/database_helper.dart';
 
 class MainNavigation extends StatefulWidget {
@@ -34,15 +35,17 @@ class _MainNavigationState extends State<MainNavigation> {
   void _initializeFavoriteProvider() {
     // Create dependencies
     final databaseHelper = DatabaseHelper.instance;
-    final localDataSource = FavoriteLocalDataSourceImpl(databaseHelper: databaseHelper);
+    final localDataSource = FavoriteLocalDataSourceImpl(
+      databaseHelper: databaseHelper,
+    );
     final repository = FavoriteRepositoryImpl(localDataSource: localDataSource);
-    
+
     // Create use cases
     final getFavorites = GetFavorites(repository);
     final addFavorite = AddFavorite(repository);
     final removeFavorite = RemoveFavorite(repository);
     final isFavorite = IsFavorite(repository);
-    
+
     _favoriteProvider = FavoriteProvider(
       getFavorites: getFavorites,
       addFavorite: addFavorite,
@@ -77,44 +80,13 @@ class _MainNavigationState extends State<MainNavigation> {
   }
 
   Widget _buildSettingsPage() {
-    return const Scaffold(
-      appBar: null,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.settings,
-              size: 80,
-              color: Colors.grey,
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Settings Page',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Coming Soon',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    return const SettingsPage();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return ChangeNotifierProvider.value(
       value: _favoriteProvider,
       child: Scaffold(
@@ -132,49 +104,49 @@ class _MainNavigationState extends State<MainNavigation> {
           ],
         ),
         bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: theme.shadowColor.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: _onTabTapped,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: theme.colorScheme.surface,
-          selectedItemColor: theme.colorScheme.primary,
-          unselectedItemColor: theme.colorScheme.onSurfaceVariant,
-          selectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: theme.shadowColor.withAlpha(25), // 0.1 * 255 ≈ 25
+                blurRadius: 8,
+                offset: const Offset(0, -2),
+              ),
+            ],
           ),
-          unselectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 12,
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: _onTabTapped,
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: theme.colorScheme.surface,
+            selectedItemColor: theme.colorScheme.primary,
+            unselectedItemColor: theme.colorScheme.onSurfaceVariant,
+            selectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
+            unselectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 12,
+            ),
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_outlined),
+                activeIcon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite_outline),
+                activeIcon: Icon(Icons.favorite),
+                label: 'Favorites',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings_outlined),
+                activeIcon: Icon(Icons.settings),
+                label: 'Settings',
+              ),
+            ],
           ),
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_outline),
-              activeIcon: Icon(Icons.favorite),
-              label: 'Favorites',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings_outlined),
-              activeIcon: Icon(Icons.settings),
-              label: 'Settings',
-            ),
-          ],
         ),
-      ),
       ),
     );
   }
