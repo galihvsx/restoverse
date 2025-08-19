@@ -27,8 +27,6 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: CustomAppBar(title: 'Restoverse', centerTitle: true),
       body: Column(

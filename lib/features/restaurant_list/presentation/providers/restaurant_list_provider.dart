@@ -76,7 +76,6 @@ class RestaurantListProvider extends ChangeNotifier {
 
     _currentPage++;
     final startIndex = _currentPage * _pageSize;
-    final endIndex = startIndex + _pageSize;
 
     final newItems = _allRestaurants.skip(startIndex).take(_pageSize).toList();
     _displayedRestaurants.addAll(newItems);
