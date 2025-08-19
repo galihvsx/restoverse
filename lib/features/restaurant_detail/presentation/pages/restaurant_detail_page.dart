@@ -5,6 +5,10 @@ import '../../../../core/utils/api_state.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/error_widget.dart';
 import '../../../../core/widgets/loading_widget.dart';
+import '../../../favorites/domain/entities/favorite_restaurant.dart';
+import '../../../favorites/presentation/providers/favorite_provider.dart';
+import '../../../review/presentation/providers/review_provider.dart';
+import '../../../review/presentation/widgets/review_form.dart';
 import '../providers/restaurant_detail_provider.dart';
 import '../widgets/menu_section.dart';
 import '../widgets/restaurant_header.dart';
@@ -111,6 +115,15 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage>
     dynamic restaurant,
     ThemeData theme,
   ) {
+    // Sync existing reviews with ReviewProvider
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context.mounted) {
+        context.read<ReviewProvider>().setInitialReviews(
+          List.from(restaurant.customerReviews),
+        );
+      }
+    });
+
     _animationController.forward();
 
     return CustomScrollView(
@@ -120,6 +133,57 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage>
           pinned: true,
           backgroundColor: theme.colorScheme.surface,
           foregroundColor: theme.colorScheme.onSurface,
+          actions: [
+            Consumer<FavoriteProvider>(
+              builder: (context, favoriteProvider, child) {
+                return FutureBuilder<bool>(
+                  future: favoriteProvider.checkIsFavorite(restaurant.id),
+                  builder: (context, snapshot) {
+                    final isFavorite = snapshot.data ?? false;
+                    return IconButton(
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite
+                            ? Colors.red
+                            : theme.colorScheme.onSurface,
+                      ),
+                      onPressed: () async {
+                        final favoriteRestaurant = FavoriteRestaurant(
+                          id: restaurant.id,
+                          name: restaurant.name,
+                          city: restaurant.city,
+                          pictureId: restaurant.pictureId,
+                          rating: restaurant.rating,
+                          description: restaurant.description,
+                          createdAt: DateTime.now(),
+                        );
+
+                        final wasAdded = !(await favoriteProvider
+                            .checkIsFavorite(restaurant.id));
+                        await favoriteProvider.toggleFavorite(
+                          favoriteRestaurant,
+                        );
+
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                wasAdded
+                                    ? '${restaurant.name} added to favorites'
+                                    : '${restaurant.name} removed from favorites',
+                              ),
+                              duration: const Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ],
           flexibleSpace: FlexibleSpaceBar(
             background: FadeTransition(
               opacity: _fadeAnimation,
@@ -139,7 +203,13 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage>
                   const SizedBox(height: 16),
                   MenuSection(menu: restaurant.menus),
                   const SizedBox(height: 16),
-                  ReviewsSection(reviews: restaurant.customerReviews),
+                  ReviewForm(restaurantId: restaurant.id),
+                  const SizedBox(height: 16),
+                  Consumer<ReviewProvider>(
+                    builder: (context, reviewProvider, child) {
+                      return ReviewsSection(reviews: reviewProvider.reviews);
+                    },
+                  ),
                   const SizedBox(height: 80),
                 ],
               ),
