@@ -42,4 +42,23 @@ class ReminderProvider extends ChangeNotifier {
   void toggleReminder() {
     setReminderEnabled(!_isReminderEnabled);
   }
+  
+  // Check if exact alarms can be scheduled (synchronous)
+  bool canScheduleExactAlarms() {
+    return _notificationHelper.canScheduleExactAlarms();
+  }
+  
+  // Check exact alarm permission status (asynchronous)
+  Future<bool> checkExactAlarmPermission() async {
+    final canSchedule = await _notificationHelper.checkExactAlarmPermission();
+    notifyListeners(); // Notify listeners when permission status changes
+    return canSchedule;
+  }
+  
+  // Open system settings for exact alarms permission
+  Future<void> openExactAlarmsSettings() async {
+    await _notificationHelper.openExactAlarmsSettings();
+    // Check permission status after returning from settings
+    await checkExactAlarmPermission();
+  }
 }

@@ -2,8 +2,8 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../restaurant_detail/domain/entities/review.dart';
 import '../../../restaurant_detail/data/models/review_model.dart';
+import '../../../restaurant_detail/domain/entities/review.dart';
 import '../../domain/repositories/review_repository.dart';
 import '../datasources/review_remote_datasource.dart';
 

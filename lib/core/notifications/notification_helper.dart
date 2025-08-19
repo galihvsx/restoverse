@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -12,6 +13,42 @@ class NotificationHelper {
   static const int _dailyReminderNotificationId = 1;
 
   static FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
+
+  // Track permission status
+  bool _canScheduleExactAlarms = true;
+
+  // Check if exact alarms can be scheduled
+  bool canScheduleExactAlarms() {
+    if (Platform.isAndroid) {
+      // For Android 15+, we need to check the actual permission status
+      return _canScheduleExactAlarms;
+    }
+    return true; // iOS doesn't need this permission
+  }
+  
+  // Check exact alarm permission status asynchronously
+  Future<bool> checkExactAlarmPermission() async {
+    if (Platform.isAndroid) {
+      final status = await Permission.scheduleExactAlarm.status;
+      _canScheduleExactAlarms = status.isGranted;
+      return _canScheduleExactAlarms;
+    }
+    return true; // iOS doesn't need this permission
+  }
+
+  // Open system settings for exact alarms
+  Future<void> openExactAlarmsSettings() async {
+    if (Platform.isAndroid) {
+      // Use permission_handler to request exact alarm permission
+      final status = await Permission.scheduleExactAlarm.request();
+      _canScheduleExactAlarms = status.isGranted;
+      
+      // If permission is still denied, open app settings
+      if (!status.isGranted) {
+        await openAppSettings();
+      }
+    }
+  }
 
   // Singleton pattern
   NotificationHelper._privateConstructor();
@@ -103,8 +140,11 @@ class NotificationHelper {
               >();
 
       if (androidImplementation != null) {
+        // Request notification permission
         await androidImplementation.requestNotificationsPermission();
-        await androidImplementation.requestExactAlarmsPermission();
+        
+        // Check exact alarm permission status using permission_handler
+        await checkExactAlarmPermission();
       }
     }
   }
@@ -198,6 +238,8 @@ class NotificationHelper {
       return false;
     }
   }
+
+
 
   // Get next instance of 11:00 AM
   tz.TZDateTime _nextInstanceOf11AM() {

@@ -10,18 +10,24 @@ class AppTheme {
   static const Color warningColor = Color(0xFFFFC107);
 
   static const Color lightBackground = Color(0xFFFFFFFF);
-  static const Color lightSurface = Color(0xFFF5F5F5);
-  static const Color lightOnBackground = Color(0xFF000000);
-  static const Color lightOnSurface = Color(0xFF1C1B1F);
-  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightSurface = Color(0xFFF8F9FA);
+  static const Color lightOnBackground = Color(0xFF1A1A1A);
+  static const Color lightOnSurface = Color(0xFF2D2D2D);
+  static const Color lightOutline = Color(0xFF6B7280);
 
   static const Color darkBackground = Color(0xFF121212);
   static const Color darkSurface = Color(0xFF1E1E1E);
   static const Color darkOnBackground = Color(0xFFFFFFFF);
-  static const Color darkOnSurface = Color(0xFFE6E1E5);
-  static const Color darkOutline = Color(0xFF938F99);
+  static const Color darkOnSurface = Color(0xFFFFFFFF);
+  static const Color darkOutline = Color(0xFF8A8A8A);
 
-  static TextTheme get textTheme => GoogleFonts.poppinsTextTheme();
+  static TextTheme get textTheme => GoogleFonts.poppinsTextTheme(
+    ThemeData.light().textTheme,
+  );
+
+  static TextTheme get darkTextTheme => GoogleFonts.poppinsTextTheme(
+    ThemeData.dark().textTheme,
+  );
 
   static ThemeData get lightTheme => ThemeData(
     useMaterial3: true,
@@ -37,8 +43,13 @@ class AppTheme {
       onSecondary: Colors.white,
       onTertiary: Colors.white,
       outline: lightOutline,
+      background: lightBackground,
+      onBackground: lightOnBackground,
     ),
-    textTheme: textTheme,
+    textTheme: textTheme.apply(
+      bodyColor: lightOnBackground,
+      displayColor: lightOnBackground,
+    ),
     appBarTheme: AppBarTheme(
       backgroundColor: lightBackground,
       foregroundColor: lightOnBackground,
@@ -70,8 +81,13 @@ class AppTheme {
       onSecondary: Colors.white,
       onTertiary: Colors.white,
       outline: darkOutline,
+      background: darkBackground,
+      onBackground: darkOnBackground,
     ),
-    textTheme: textTheme,
+    textTheme: darkTextTheme.apply(
+      bodyColor: darkOnBackground,
+      displayColor: darkOnBackground,
+    ),
     appBarTheme: AppBarTheme(
       backgroundColor: darkBackground,
       foregroundColor: darkOnBackground,
